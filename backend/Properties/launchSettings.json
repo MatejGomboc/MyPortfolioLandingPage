@@ -1,7 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/launchsettings.json",
     "profiles": {
-        "http-dev": {
+        "Development": {
             "commandName": "Project",
             "dotnetRunMessages": true,
             "launchBrowser": false,
@@ -9,23 +9,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
         },
-        "https-dev": {
-            "commandName": "Project",
-            "dotnetRunMessages": true,
-            "launchBrowser": false,
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            }
-        },
-        "http-prod": {
-            "commandName": "Project",
-            "dotnetRunMessages": true,
-            "launchBrowser": false,
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Production"
-            }
-        },
-        "https-prod": {
+        "Production": {
             "commandName": "Project",
             "dotnetRunMessages": true,
             "launchBrowser": false,
