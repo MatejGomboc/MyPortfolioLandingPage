@@ -1,4 +1,6 @@
-@ApiAddress = http://localhost:5001
+### Test Health Endpoint (localhost only)
+GET http://localhost:5001/health
 
-GET {{ApiAddress}}/health/
-Accept: application/json
+### Note: This API is designed to run behind a reverse proxy
+### Direct external access is blocked by design
+### HTTPS should be configured at the reverse proxy level
