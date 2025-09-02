@@ -5,6 +5,15 @@ using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder appBuilder = WebApplication.CreateBuilder(args);
 
+// Configure Kestrel to only bind to localhost
+// This ensures the API is never directly accessible from outside
+// and must be accessed through a reverse proxy
+appBuilder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    // Force localhost-only binding
+    serverOptions.ListenLocalhost(5001);
+});
+
 // Only add OpenAPI services in Development environment
 if (appBuilder.Environment.IsDevelopment())
 {
@@ -19,7 +28,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+// Note: UseHttpsRedirection removed - HTTPS is handled by reverse proxy
+// app.UseHttpsRedirection();
 
 app.MapGet("/health", () =>
 {
