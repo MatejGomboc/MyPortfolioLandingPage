@@ -6,18 +6,23 @@ using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder appBuilder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to only bind to localhost
+// Configure Kestrel to only bind to localhost with HTTPS
 // This ensures the API is never directly accessible from outside
 // and must be accessed through a reverse proxy
 appBuilder.WebHost.ConfigureKestrel((context, serverOptions) =>
 {
-    // Get port from configuration, default to 5001
     var config = context.Configuration;
-    var port = config.GetValue<int>("Kestrel:Endpoints:Http:Port", 5001);
+    
+    // Get ports from configuration, with secure defaults
+    var httpsPort = config.GetValue<int>("Kestrel:Endpoints:Https:Port", 5000);
     
     // Force localhost-only binding - this is hardcoded for security
     // The API should NEVER bind to external interfaces
-    serverOptions.ListenLocalhost(port);
+    // HTTPS only for end-to-end encryption
+    serverOptions.ListenLocalhost(httpsPort, listenOptions =>
+    {
+        listenOptions.UseHttps();
+    });
 });
 
 // Only add OpenAPI services in Development environment
@@ -34,8 +39,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// Note: UseHttpsRedirection removed - HTTPS is handled by reverse proxy
-// app.UseHttpsRedirection();
+// Enable HTTPS redirection to ensure all traffic is encrypted
+app.UseHttpsRedirection();
 
 app.MapGet("/health", () =>
 {
