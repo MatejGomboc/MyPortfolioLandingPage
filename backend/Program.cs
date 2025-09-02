@@ -1,28 +1,19 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder appBuilder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to only bind to localhost with HTTPS
-// This ensures the API is never directly accessible from outside
-// and must be accessed through a reverse proxy
+// Configure Kestrel: localhost-only HTTPS binding for security
+// API is never directly accessible from outside - must use reverse proxy
 appBuilder.WebHost.ConfigureKestrel((context, serverOptions) =>
 {
-    var config = context.Configuration;
-    
-    // Get ports from configuration, with secure defaults
-    var httpsPort = config.GetValue<int>("Kestrel:Endpoints:Https:Port", 5000);
-    
-    // Force localhost-only binding - this is hardcoded for security
-    // The API should NEVER bind to external interfaces
-    // HTTPS only for end-to-end encryption
-    serverOptions.ListenLocalhost(httpsPort, listenOptions =>
-    {
-        listenOptions.UseHttps();
-    });
+    // Force localhost-only binding with HTTPS (port from config, default 5000)
+    serverOptions.ListenLocalhost(
+        context.Configuration.GetValue<int>("Kestrel:Endpoints:Https:Port", 5000),
+        listenOptions => listenOptions.UseHttps()
+    );
 });
 
 // Only add OpenAPI services in Development environment
