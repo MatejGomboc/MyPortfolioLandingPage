@@ -5,10 +5,15 @@ using Microsoft.Extensions.Hosting;
 
 WebApplicationBuilder appBuilder = WebApplication.CreateBuilder(args);
 
-appBuilder.Services.AddOpenApi();
+// Only add OpenAPI services in Development environment
+if (appBuilder.Environment.IsDevelopment())
+{
+    appBuilder.Services.AddOpenApi();
+}
 
 WebApplication app = appBuilder.Build();
 
+// Only map OpenAPI endpoints in Development environment
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
