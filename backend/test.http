@@ -1,8 +1,49 @@
-### Test Health Endpoint (HTTPS localhost only)
+### Test Health Endpoint (No Auth Required)
 GET https://localhost:5000/health
 
-### Note: This API uses end-to-end encryption
-### - HTTPS from reverse proxy to application
-### - Localhost-only binding for security
-### - Designed to run behind a reverse proxy
-### - Development cert required for local testing
+### Test Secure Endpoint - Without API Key (Should Fail)
+GET https://localhost:5000/api/secure
+
+### Test Secure Endpoint - With Valid API Key (Development)
+GET https://localhost:5000/api/secure
+X-API-Key: dev-api-key-123
+
+### Test Rate Limiting - Send Multiple Requests
+GET https://localhost:5000/api/secure
+X-API-Key: dev-api-key-123
+
+### Test SQL Injection Detection (Should Be Blocked)
+GET https://localhost:5000/api/secure?id=1' OR '1'='1
+X-API-Key: dev-api-key-123
+
+### Test XSS Detection (Should Be Blocked)
+POST https://localhost:5000/api/secure
+X-API-Key: dev-api-key-123
+Content-Type: application/json
+
+{
+  "data": "<script>alert('XSS')</script>"
+}
+
+### Test Path Traversal Detection (Should Be Blocked)
+GET https://localhost:5000/api/../../etc/passwd
+X-API-Key: dev-api-key-123
+
+### Test Large Request (Should Be Blocked if > 1MB)
+POST https://localhost:5000/api/secure
+X-API-Key: dev-api-key-123
+Content-Type: application/json
+
+{
+  "data": "... very large payload ..."
+}
+
+### Notes:
+# - Ultra-secure backend with multiple security layers
+# - API key required for all endpoints except /health
+# - Rate limiting: 100 req/min (production), 1000 req/min (development)
+# - SQL injection, XSS, path traversal protection
+# - Request size limited to 1MB
+# - All security events are logged
+# - HTTPS required (end-to-end encryption)
+# - Localhost-only binding (hardcoded)
