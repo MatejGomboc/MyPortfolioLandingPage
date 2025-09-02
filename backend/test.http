@@ -1,0 +1,4 @@
+@ApiAddress = http://localhost:5001
+
+GET {{ApiAddress}}/health/
+Accept: application/json
