@@ -1,6 +1,8 @@
-### Test Health Endpoint (localhost only)
-GET http://localhost:5001/health
+### Test Health Endpoint (HTTPS localhost only)
+GET https://localhost:5000/health
 
-### Note: This API is designed to run behind a reverse proxy
-### Direct external access is blocked by design
-### HTTPS should be configured at the reverse proxy level
+### Note: This API uses end-to-end encryption
+### - HTTPS from reverse proxy to application
+### - Localhost-only binding for security
+### - Designed to run behind a reverse proxy
+### - Development cert required for local testing
